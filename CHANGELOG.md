@@ -1,3 +1,6 @@
+# 7.0.1
+- Cherry pick some commits from https://github.com/i-mobility/RxBluetoothKit (no longer maintained)
+
 # 7.0.0
 - Updated RxSwift version to 6.5.0 with SPM
 - Add compatibility with Xcode 15

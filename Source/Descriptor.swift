@@ -1,5 +1,5 @@
-import Foundation
 import CoreBluetooth
+import Foundation
 import RxSwift
 
 /// Descriptor is a class implementing ReactiveX which wraps CoreBluetooth functions related to interaction with
@@ -28,13 +28,21 @@ public class Descriptor {
         self.characteristic = characteristic
     }
 
-    convenience init(descriptor: CBDescriptor, peripheral: Peripheral) {
-        guard let cbCharacteristic = descriptor.characteristic, let cbService = cbCharacteristic.service else {
-            fatalError()
+    convenience init(descriptor: CBDescriptor, peripheral: Peripheral) throws {
+        let characteristic: CBCharacteristic? = descriptor.characteristic
+        let service: CBService? = characteristic?.service
+
+        guard let characteristic, let service else {
+            throw BluetoothError.serviceDestroyed
         }
-        let service = Service(peripheral: peripheral, service: cbService)
-        let characteristic = Characteristic(characteristic: cbCharacteristic, service: service)
-        self.init(descriptor: descriptor, characteristic: characteristic)
+
+        self.init(
+            descriptor: descriptor,
+            characteristic: Characteristic(
+                characteristic: characteristic,
+                service: Service(peripheral: peripheral, service: service)
+            )
+        )
     }
 
     /// Function that allow to observe writes that happened for descriptor.

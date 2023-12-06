@@ -90,14 +90,14 @@ import RxSwift
         static func changeTypeNameToTestable(_ typeName: String) -> String {
             let regexGroup = classNamesToTestable.reduce("", { "\($0)\($1)|" }).dropLast()
             let regex = try! NSRegularExpression(pattern: "\\b(\(regexGroup))\\b", options: NSRegularExpression.Options.caseInsensitive)
-            let range = NSMakeRange(0, typeName.characters.count)
+            let range = NSMakeRange(0, typeName.count)
             return regex.stringByReplacingMatches(in: typeName, options: [], range: range, withTemplate: "_$0")
         }
 
         static func changeTypeNameToMock(_ typeName: String) -> String {
             let regexGroup = namesToMock.reduce("", { "\($0)\($1)|" }).dropLast()
             let regex = try! NSRegularExpression(pattern: "\\b(\(regexGroup))\\b", options: NSRegularExpression.Options.caseInsensitive)
-            let range = NSMakeRange(0, typeName.characters.count)
+            let range = NSMakeRange(0, typeName.count)
             return regex.stringByReplacingMatches(in: typeName, options: [], range: range, withTemplate: "$0Mock")
         }
 

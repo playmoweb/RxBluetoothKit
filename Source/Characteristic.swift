@@ -1,6 +1,6 @@
+import CoreBluetooth
 import Foundation
 import RxSwift
-import CoreBluetooth
 
 /// Characteristic is a class implementing ReactiveX which wraps CoreBluetooth functions related to interaction with [CBCharacteristic](https://developer.apple.com/library/ios/documentation/CoreBluetooth/Reference/CBCharacteristic_Class/)
 public class Characteristic {
@@ -40,12 +40,14 @@ public class Characteristic {
         self.service = service
     }
 
-    convenience init(characteristic: CBCharacteristic, peripheral: Peripheral) {
-        guard let cbService = characteristic.service else {
-            fatalError()
+    convenience init(characteristic: CBCharacteristic, peripheral: Peripheral) throws {
+        guard let service = characteristic.service else {
+            throw BluetoothError.serviceDestroyed
         }
-        let service = Service(peripheral: peripheral, service: cbService)
-        self.init(characteristic: characteristic, service: service)
+        self.init(
+            characteristic: characteristic,
+            service: Service(peripheral: peripheral, service: service)
+        )
     }
 
     /// Function that triggers descriptors discovery for characteristic.

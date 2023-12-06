@@ -1,6 +1,6 @@
-import Foundation
 import CoreBluetooth
 @testable import RxBluetoothKit
+import Foundation
 
 /// It should be deleted when `_RestoredState` will be deleted
 protocol CentralManagerRestoredStateType {
@@ -61,7 +61,15 @@ struct _CentralManagerRestoredState: CentralManagerRestoredStateType {
         let cbServices = arrayOfAnyObjects.flatMap { $0 as? CBServiceMock }
         #endif
 
-        return cbServices.map { _Service(peripheral: centralManager.retrievePeripheral(for: $0.peripheral),
-                                        service: $0) }
+        return cbServices.compactMap({ service in
+            if let peripheral = service.peripheral {
+                return _Service(
+                    peripheral: centralManager
+                        .retrievePeripheral(for: peripheral),
+                    service: service
+                )
+            }
+            return nil
+        })
     }
 }
